@@ -3,10 +3,13 @@ package ap.telegrambot.session;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 /**
  * Хранение информации по сессии в ОЗУ
  */
+@Component
 public class SessionRepositoryMemory implements SessionRepository {
   private Map<String, SessionEntity> storeMap = new ConcurrentHashMap<>();
 

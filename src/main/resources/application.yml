@@ -1,9 +1,9 @@
 bot:
-  name: {$BOT_NAME}
-  username: {$BOT_USER_NAME}
-  url: {$BOT_URL}
-  token: {$BOT_TOKEN}
+  name: ${BOT_NAME}
+  username: ${BOT_USER_NAME}
+  url: ${BOT_URL}
+  token: ${BOT_TOKEN}
 
 dot:
-  path: dot
+  path: ${BOT_DIR:dot}
 

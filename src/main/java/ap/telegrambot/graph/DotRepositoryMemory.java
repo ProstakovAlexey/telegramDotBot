@@ -16,18 +16,20 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Repository
 public class DotRepositoryMemory implements DotRepository{
   private final Map<String, DotEntity> store;
+  private final String path;
 
-  @Value("${dot.path}")
-  private String path;
-
-  public DotRepositoryMemory() throws IOException {
+  public DotRepositoryMemory(Environment environment) throws IOException {
     store = new ConcurrentHashMap<>();
+    path = environment.getProperty("dot.path");
     Set<String> dotNames = getAllNameInDirectory();
     for (String name : dotNames) {
       try {

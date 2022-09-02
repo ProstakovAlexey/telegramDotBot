@@ -1,5 +1,6 @@
 package ap.telegrambot.bot;
 
+import ap.telegrambot.bot.events.UpdateEvent;
 import ap.telegrambot.graph.DotEntity;
 import ap.telegrambot.graph.GraphService;
 import ap.telegrambot.session.SessionEntity;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -19,27 +22,27 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 public class Bot extends TelegramLongPollingBot {
+  private final static String SOURCE = "Bot";
   private final String userName;
   private final String botToken;
-  private final BotService botService;
+  private final ApplicationEventPublisher publisher;
 
-  public Bot(String userName, String token, BotService botService) {
+  public Bot(String userName, String token, ApplicationEventPublisher publisher) {
     super();
     this.userName = userName;
     this.botToken = token;
-    this.botService = botService;
+    this.publisher = publisher;
   }
 
   @Override
   public void onUpdateReceived(Update update) {
     if (update.hasMessage()) {
-      log.info("Update without message");
+      UpdateEvent updateEvent = new UpdateEvent(SOURCE, update);
+      publisher.publishEvent(updateEvent);
+    } else {
+      log.debug("Update without message");
     }
-    SendMessage message = botService.messageProcessing(update);
-    sendMessage(message);
   }
-
-
 
   private void sendMessage(SendMessage message) {
     if (message != null) {
@@ -61,6 +64,7 @@ public class Bot extends TelegramLongPollingBot {
     return botToken;
   }
 
+  /*
   private SendMessage getAllGraph(String chatId) {
     List<DotEntity> dots = graphService.getAllDots();
 
@@ -92,6 +96,8 @@ public class Bot extends TelegramLongPollingBot {
     message.enableMarkdown(true);
     return message;
   }
+
+   */
 
   /**
    * Размещает кнопки в ряды
